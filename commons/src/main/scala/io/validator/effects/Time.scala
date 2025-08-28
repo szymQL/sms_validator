@@ -10,7 +10,7 @@ trait Time {
 
 object Time {
   def apply()(using Time): Time = summon[Time]
-  
+
   def default: Time = new Time {
     override def now: IO[Instant] = IO(Instant.now())
   }

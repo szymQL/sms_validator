@@ -9,6 +9,6 @@ class RequiresNow[+A](f: Now => A) {
 
 object RequiresNow {
   def apply[A](f: Now => A) = new RequiresNow(f)
-  
+
   given [A](using Now): Conversion[RequiresNow[A], A] = _()
 }
