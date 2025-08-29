@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%yellow([%date]) %highlight([%-5level]) %green([%thread]) %cyan([%logger]) - %magenta(%msg) %n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="io.validator" level="INFO" />
+    <root level="$LOG_LEVEL:-INFO" >
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>

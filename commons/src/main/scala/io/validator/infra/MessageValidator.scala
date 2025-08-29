@@ -11,7 +11,7 @@ class MessageValidator(urlValidator: UrlValidator) {
   private def uriRegex: Regex =
     "[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)".r
 
-  def findUrls(message: String): Set[String] = uriRegex.findAllIn(message).toSet
+  private[infra] def findUrls(message: String): Set[String] = uriRegex.findAllIn(message).toSet
 
   def validate(message: String)(using Now): IO[Either[DomainError, Unit]] =
     urlValidator.getThreatLevels(findUrls(message)).map { urls =>

@@ -2,7 +2,7 @@ package io.validator.http
 
 import cats.effect.IO
 import io.validator.app.*
-import io.validator.effects.{RequiresNow, Time}
+import io.validator.effects.{Logging, RequiresNow, Time}
 import org.http4s.HttpRoutes
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 
@@ -10,7 +10,8 @@ class Routes(
     endpoints: Endpoints,
     permissionsUseCase: RequiresNow[PermissionsUseCase],
     saveSmsUseCase: RequiresNow[SaveSmsUseCase]
-)(using Time) {
+)(using Time)
+    extends Logging {
 
   def routes: HttpRoutes[IO] =
     Http4sServerInterpreter[IO]().toRoutes(serverEndpoints)
@@ -22,14 +23,17 @@ class Routes(
   )
 
   private def grantPermissions = endpoints.grantPermissions.serverLogic { userId =>
-    permissionsUseCase.initNow().flatMap(_.grant(userId).attempt)
+    logger.info("Got request grantPermissions") >>
+      permissionsUseCase.initNow().flatMap(_.grant(userId).attempt)
   }
 
   private def revokePermissions = endpoints.revokePermissions.serverLogic { userId =>
-    permissionsUseCase.initNow().flatMap(_.revoke(userId).attempt)
+    logger.info("Got request revokePermissions") >>
+      permissionsUseCase.initNow().flatMap(_.revoke(userId).attempt)
   }
 
   private def saveSms = endpoints.saveSms.serverLogic { request =>
-    saveSmsUseCase.initNow().flatMap(_.trySave(request.toDomain))
+    logger.info("Got request saveSms") >>
+      saveSmsUseCase.initNow().flatMap(_.trySave(request.toDomain))
   }
 }

@@ -2,12 +2,11 @@ package io.validator
 
 import cats.effect.IO
 import io.validator.AppConfig.*
-import io.validator.core.Model.Score
 import pureconfig.{ConfigReader, ConfigSource}
 
 import java.time.Duration
 
-case class AppConfig(http: HttpConfig, webRiskClient: WebRiskClientConfig) derives ConfigReader
+case class AppConfig(appName: String, http: HttpConfig, webRiskClient: WebRiskClientConfig) derives ConfigReader
 
 object AppConfig {
   case class HttpConfig(host: String, port: Int)

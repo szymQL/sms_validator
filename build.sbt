@@ -2,6 +2,13 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "3.7.2"
 
+ThisBuild / assembly / assemblyMergeStrategy := {
+  case x if x.contains("module-info") => MergeStrategy.discard
+  case x                              =>
+    val oldStrategy = (assembly / assemblyMergeStrategy).value
+    oldStrategy(x)
+}
+
 val ceVersion = "3.6.3"
 val circeVersion = "0.14.14"
 val quicklensVersion = "1.9.12"
@@ -10,6 +17,7 @@ val pureconfigVersion = "0.17.9"
 val sttpClientVersion = "4.0.9"
 val sttpTapirVersion = "1.11.42"
 val http4sVersion = "0.23.30"
+val logbackVersion = "1.5.18"
 
 val munitVersion = "1.1.1"
 
@@ -40,7 +48,9 @@ lazy val commons = project
       "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % sttpTapirVersion,
       "org.http4s" %% "http4s-ember-client" % http4sVersion,
       "org.http4s" %% "http4s-ember-server" % http4sVersion,
-      "org.http4s" %% "http4s-dsl" % http4sVersion
+      "org.http4s" %% "http4s-dsl" % http4sVersion,
+      "org.typelevel" %% "log4cats-slf4j" % "2.7.1",
+      "ch.qos.logback" % "logback-classic" % "1.5.18"
     ),
     libraryDependencies ++= Seq(
       "org.scalameta" %% "munit" % munitVersion % Test
@@ -50,7 +60,8 @@ lazy val commons = project
 lazy val web = project
   .in(file("web"))
   .settings(
-    name := "web"
+    name := "web",
+    assembly / assemblyJarName := "sms-validator-web.jar"
   )
   .dependsOn(commons)
 
